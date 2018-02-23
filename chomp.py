@@ -1,6 +1,6 @@
 """
 Chompin' it up!
-By Jasper
+By Joseph Rios
 """
 import os
 class conf:
@@ -13,6 +13,7 @@ class conf:
         self.data=l
 
     def winMove(self):
+        #First check to see if the configuration has been visited before
         if(tuple(self.data) in conf.loss):
             return None
         elif(tuple(self.data) in conf.win):
@@ -22,13 +23,19 @@ class conf:
                 for x in range(i):
                     if(x!=0 or y!=0):
                         temp=self.transform(x,y)
-                        if(temp.winMove()==None):
+                        if(temp.winMove()==None): #Here is the recursive call
+                            #Add winning move for this configuration
                             conf.win[tuple(self.data)]=(x,y)
                             return (x,y)
+            #If you get to here there are no winning moves
             conf.loss.add(tuple(self.data))
             return None
 
     def winMoves(self):
+        #Basically the same as the above function, except it accounts for
+        #the possibility of having more than one winning move for a
+        #particular configuration
+        #Consider trying to prove that this could never be the case.
         results = []
         if(tuple(self.data) in conf.loss):
             return None
@@ -49,6 +56,9 @@ class conf:
                 return results
 
     def transform(self,x,y):
+        #Makes a move on the configuration (removes some chocolate)
+        #Should remove self, everything below it and everything left of it
+        #Output is a new configuration
         temp=[]
         for n,i in enumerate(self.data):
             if(n>=y and i>x):
@@ -60,6 +70,7 @@ class conf:
         return conf(temp)
 
     def __str__(self):
+        #For pretty printing
         result=""
         for i in self.data:
             result+=i*"#"
@@ -67,6 +78,7 @@ class conf:
         return result
 
     def load(self,loss,win):
+        #Load our win/loss data from previous iterations to save time
         winf=open(win,'r')
         lossf=open(loss,'r')
         for i in lossf:
@@ -80,6 +92,7 @@ class conf:
         winf.close()
 
     def save(self,loss,win):
+        #Save our win/loss data to be used next time
         lossf=open(loss,'w')
         winf=open(win,'w')
         for i in conf.loss:
@@ -99,11 +112,6 @@ class conf:
             winf.write(temp)
         winf.close()
             
-                
-                
-            
-                
-
 def main():
     """
     print("Loading...")
